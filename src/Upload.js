@@ -1,5 +1,7 @@
 import React , {useState} from 'react';
 import S3 from 'react-aws-s3';
+import { TextField, Box } from "@material-ui/core";
+import './App.css'
 
 // installed using npm install buffer --save
 window.Buffer = window.Buffer || require("buffer").Buffer;
@@ -9,14 +11,18 @@ window.Buffer = window.Buffer || require("buffer").Buffer;
 const Upload = () => {
 
     const [selectedFile, setSelectedFile] = useState(null);
+    const [bucket, setBucket] = useState(null);
+    const [region, setRegion] = useState(null);
+    const [keyId, setKeyId] = useState(null);
+    const [secret, setSecret] = useState(null);
 
     // the configuration information is fetched from the .env file
     const config = {
-        bucketName: process.env.REACT_APP_BUCKET_NAME,
-        region: process.env.REACT_APP_REGION,
-        accessKeyId: process.env.REACT_APP_ACCESS,
-        secretAccessKey: process.env.REACT_APP_SECRET,
-    }
+        bucketName: bucket,
+        region: region,
+        accessKeyId: keyId,
+        secretAccessKey: secret,
+      };
 
     const handleFileInput = (e) => {
         setSelectedFile(e.target.files[0]);
@@ -30,12 +36,66 @@ const Upload = () => {
         .then(data => console.log(data.location))
         .catch(err => console.error(err))
     }
-    return <div>
-        <div>React S3 File Upload</div>
+    return (
+    <div>
+        <div>
+            <Box
+            marginLeft={"auto"}
+            marginRight="auto"
+            sx={{
+                width: 300,
+                maxWidth: "100%",
+            }}
+            >
+            <TextField
+                label="bucketName"
+                onChange={(e) => {
+                setBucket(e.target.value);
+                }}
+                variant="filled"
+                fullWidth
+                margin="dense"
+                value={bucket}
+            />
+            <TextField
+                label="Region"
+                onChange={(e) => {
+                setRegion(e.target.value);
+                }}
+                variant="filled"
+                fullWidth
+                margin="dense"
+                value={region}
+            />
+            <TextField
+                label="AccessKeyId"
+                onChange={(e) => {
+                setKeyId(e.target.value);
+                }}
+                fullWidth
+                variant="filled"
+                margin="dense"
+                value={keyId}
+            />
+            <TextField
+                label="SecretAccessKey"
+                onChange={(e) => {
+                setSecret(e.target.value);
+                }}
+                fullWidth
+                variant="filled"
+                margin="dense"
+                value={secret}
+            />
+            </Box>
+      </div>
         <input type="file" onChange={handleFileInput}/>
         <br></br>
-        <button onClick={() => uploadFile(selectedFile)}> Upload to S3</button>
+        <button onClick={() => uploadFile(selectedFile)} className='upload-button'> Upload</button>
+        <p id="p1">This is the best File Uploader!</p>
+        <p>Thank you!</p>
     </div>
+    )
 }
 
 export default Upload;
